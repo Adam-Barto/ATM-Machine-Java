@@ -11,6 +11,7 @@ public class Account {
 
 	Scanner input = new Scanner(System.in);
 	DecimalFormat moneyFormat = new DecimalFormat("'$'###,##0.00");
+	Logger logger = new Logger();
 
 	public Account() {
 	}
@@ -55,32 +56,38 @@ public class Account {
 
 	public double calcCheckingWithdraw(double amount) {
 		checkingBalance = (checkingBalance - amount);
+		logger.log(this,"CheckingWithdraw", amount);
 		return checkingBalance;
 	}
 
 	public double calcSavingWithdraw(double amount) {
 		savingBalance = (savingBalance - amount);
+		logger.log(this,"SavingWithdraw", amount);
 		return savingBalance;
 	}
 
 	public double calcCheckingDeposit(double amount) {
 		checkingBalance = (checkingBalance + amount);
+		logger.log(this,"CheckingDeposit", amount);
 		return checkingBalance;
 	}
 
 	public double calcSavingDeposit(double amount) {
 		savingBalance = (savingBalance + amount);
+		logger.log(this,"SavingDeposit", amount);
 		return savingBalance;
 	}
 
 	public void calcCheckTransfer(double amount) {
 		checkingBalance = checkingBalance - amount;
 		savingBalance = savingBalance + amount;
+		logger.log(this,"CheckTransfer", amount);
 	}
 
 	public void calcSavingTransfer(double amount) {
 		savingBalance = savingBalance - amount;
 		checkingBalance = checkingBalance + amount;
+		logger.log(this,"SavingTransfer", amount);
 	}
 
 	public void getCheckingWithdrawInput() {

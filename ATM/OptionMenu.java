@@ -230,17 +230,6 @@ public class OptionMenu {
 				System.out.println("File not found");
 			}
 	}
-
-	public void log(Account acc,String action,double amount){
-		try{
-			FileWriter fw = new FileWriter("ATM/log.txt", true);
-			fw.write("Hi");
-			fw.close();
-		}catch(IOException e){
-			System.out.println("File not found");
-		}
-
-	}
 	public void mainMenu() throws IOException {
 		//data.putIfAbsent(952141, new Account(952141, 191904, 1000, 5000));
 		//data.putIfAbsent(123, new Account(123, 123, 20000, 50000));
