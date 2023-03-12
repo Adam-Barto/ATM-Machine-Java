@@ -1,10 +1,8 @@
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class OptionMenu {
 	Scanner menuInput = new Scanner(System.in);
@@ -77,8 +75,9 @@ public class OptionMenu {
 	}
 
 	public void getStatements(Account acc){
-		System.out.println("\nChecking Account Balance: " + moneyFormat.format(acc.getCheckingBalance()+
-				           "\nSavings Account Balance: " + moneyFormat.format(acc.getSavingBalance())));
+		System.out.println("\nChecking Account Balance: " + moneyFormat.format(acc.getCheckingBalance())+
+				           "\nSavings Account Balance: " + moneyFormat.format(acc.getSavingBalance()));
+		saveAccounts(acc);
 	}
 
 	public void getChecking(Account acc) {
@@ -120,6 +119,7 @@ public class OptionMenu {
 				menuInput.next();
 			}
 		}
+		saveAccounts(acc);
 	}
 
 	public void getSaving(Account acc) {
@@ -158,6 +158,7 @@ public class OptionMenu {
 				menuInput.next();
 			}
 		}
+		saveAccounts(acc);
 	}
 
 	public void createAccount() throws IOException {
@@ -187,13 +188,67 @@ public class OptionMenu {
 		data.put(cst_no, new Account(cst_no, pin));
 		System.out.println("\nYour new account has been successfuly registered!");
 		System.out.println("\nRedirecting to login.............");
-		getLogin();
+		//getLogin();
+		mainMenu();
+	}
+	public void loadAccounts() {
+		try {
+			List<String> loadAcc = Collections.singletonList(Files.readString(Paths.get("ATM/saveAccounts.txt")));
+			FileWriter fw = new FileWriter("ATM/saveAccounts.txt", false);
+			fw.write("");
+			for (String s: loadAcc) {
+				String[] k = s.split("a");
+				int customer_Number = Integer.parseInt(k[1]);
+				int pin_Number = Integer.parseInt(k[2]);
+				double checking_Balance = Double.parseDouble(k[3]);
+				double savings_Balance = Double.parseDouble(k[4]);
+				data.putIfAbsent(customer_Number,new Account(customer_Number, pin_Number, checking_Balance, savings_Balance));
+				}
+//			}
+
+		}catch(IOException e){
+			System.out.println("Failed");
+		}
 	}
 
+	public void saveAccounts(Account acc) {
+		int customer_Number = acc.getCustomerNumber();
+		int pin_Number = acc.getPinNumber();
+		double checking_Balance = acc.getCheckingBalance();
+		double savings_Balance = acc.getSavingBalance();
+		if (data.containsKey(customer_Number)){
+			data.remove(customer_Number);
+			data.put(customer_Number,new Account(customer_Number, pin_Number, checking_Balance, savings_Balance));
+		}
+		try{
+			FileWriter fw = new FileWriter("ATM/saveAccounts.txt", true);
+//			StringBuilder to_save = new StringBuilder(" cn" + customer_Number + "pin" + pin_Number + "ch" + checking_Balance + "sb" + savings_Balance);
+			StringBuilder to_save = new StringBuilder(" a" + customer_Number + "a" + pin_Number + "a" + checking_Balance + "a" + savings_Balance);
+			fw.write(String.valueOf(to_save));
+			fw.close();
+		}catch(IOException e){
+				System.out.println("File not found");
+			}
+	}
+
+	public void log(Account acc,String action,double amount){
+		try{
+			FileWriter fw = new FileWriter("ATM/log.txt", true);
+			fw.write("Hi");
+			fw.close();
+		}catch(IOException e){
+			System.out.println("File not found");
+		}
+
+	}
 	public void mainMenu() throws IOException {
-		data.put(952141, new Account(952141, 191904, 1000, 5000));
-		data.put(123, new Account(123, 123, 20000, 50000));
+		//data.putIfAbsent(952141, new Account(952141, 191904, 1000, 5000));
+		//data.putIfAbsent(123, new Account(123, 123, 20000, 50000));
+		saveAccounts(new Account(952141, 191904, 1000, 5000));
+		saveAccounts(new Account(123, 123, 20000, 50000));
+
 		boolean end = false;
+		loadAccounts();
 		while (!end) {
 			try {
 				System.out.println("\n Type 1 - Login");
