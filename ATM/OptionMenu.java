@@ -8,6 +8,7 @@ public class OptionMenu {
 	Scanner menuInput = new Scanner(System.in);
 	DecimalFormat moneyFormat = new DecimalFormat("'$'###,##0.00");
 	HashMap<Integer, Account> data = new HashMap<Integer, Account>();
+	Logger log = new Logger();
 
 	public void getLogin() throws IOException {
 		boolean end = false;
@@ -46,7 +47,8 @@ public class OptionMenu {
 				System.out.println(" Type 1 - Checking Account");
 				System.out.println(" Type 2 - Savings Account");
 				System.out.println(" Type 3 - Show Statements");
-				System.out.println(" Type 4 - Exit");
+				System.out.println(" Type 4 - Show History");
+				System.out.println(" Type 5 - Exit");
 				System.out.print("\nChoice: ");
 
 				int selection = menuInput.nextInt();
@@ -62,11 +64,15 @@ public class OptionMenu {
 					getStatements(acc);
 					break;
 				case 4:
+					log.history(acc);
+					break;
+				case 5:
 					end = true;
 					break;
 				default:
 					System.out.println("\nInvalid Choice.");
 				}
+				saveAccounts(acc);
 			} catch (InputMismatchException e) {
 				System.out.println("\nInvalid Choice.");
 				menuInput.next();
